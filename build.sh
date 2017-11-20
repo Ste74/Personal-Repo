@@ -51,8 +51,9 @@ trap
 # Choice the pkgs
 if [ "$pkgs" == "List" ]; then 
    pkg=$(zenity --entry --entry-text="List name")
+   pkgs=$(zenity --width=600 --height=300 --title="Gui for Build pkgs" --text="Select PKGBUILD dir" --file-selection --directory --filename="$path/$repo/")
 elif [ "$pkgs" == "Pkg" ]; then
-pkgs=$(zenity --width=600 --height=300 --title="Gui for Build pkgs" --text="Select PKGBUILD dir" --file-selection --directory --filename="$path/$repo/")
+   pkgs=$(zenity --width=600 --height=300 --title="Gui for Build pkgs" --text="Select PKGBUILD dir" --file-selection --directory --filename="$path/$repo/")
 
 pkg=$(echo "$pkgs" | rev | cut -d'/' -f 1 | rev) 
 
@@ -62,7 +63,7 @@ fi
 arch=$(zenity --list --radiolist --width=600 --height=300 --title="Gui for Build pkgs" --text="Select how to build" \
 --print-column=2 \
 --column="Select" --column="Arch" \
-true "any" \
+true "x86_64 - any" \
 false "i686 - x86_64"
 )
 
@@ -70,14 +71,14 @@ trap
 
 # Start building
 
-if [ $arch = "any" ]; then 
+if [ "$arch" = "x86_64 - any" ]; then 
      cd $pkgs
      cd ../
     buildpkg -p $pkg -$option
-else
-     cd $pkgs
+else 
+cd $pkgs
      cd ../
-     for ARCH in x86_64 i686; do
+     for ARCH in x86_64 i686 ; do
      buildpkg -p $pkg -a $ARCH -$option
      done
 fi
